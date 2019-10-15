@@ -97,6 +97,17 @@ type Options struct {
 
 	RequestSigningKey string `envconfig:"REQUEST_SIGNATURE_KEY"`
 
+	// Creates a HS256 signed JWT token
+	JwtHS256 string `envconfig:"JWT_SHARED_SECRET"`
+
+	// Creates a RS256 public/private key encrypted JWT token
+	// ssh-keygen -t rsa -b 2048 -f jwtRS256.key
+	// # Don't add passphrase
+	// openssl rsa -in jwtRS256.key -pubout -outform PEM -out jwtRS256.key.pub
+	// cat jwtRS256.key
+	// cat jwtRS256.key.pub
+	JwtRS256PrivateKey string `envconfig:"JWT_PRIVATE_KEY"`
+
 	StatsdClient *statsd.Client
 
 	// This is an override for supplying template vars at test time
