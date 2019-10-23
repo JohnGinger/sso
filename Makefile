@@ -30,8 +30,8 @@ imagepush-commit:
 	docker push buzzfeed/sso-dev:$(commit)
 
 imagepush-latest:
-	docker build -t buzzfeed/sso-dev:latest .
-	docker push buzzfeed/sso-dev:latest
+	docker build -t eu.gcr.io/wayve-cloud/sso-dev:with-jwt5 .
+	docker push eu.gcr.io/wayve-cloud/sso-dev:with-jwt5
 
 releasepush:
 	docker build -t buzzfeed/sso:$(version) -t buzzfeed/sso-dev:latest .

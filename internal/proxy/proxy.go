@@ -3,8 +3,10 @@ package proxy
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/buzzfeed/sso/internal/pkg/hostmux"
+	log "github.com/buzzfeed/sso/internal/pkg/logging"
 	"github.com/buzzfeed/sso/internal/pkg/options"
 )
 
@@ -24,6 +26,18 @@ func New(opts *Options) (*SSOProxy, error) {
 			return nil, err
 		}
 		optFuncs = append(optFuncs, SetRequestSigner(requestSigner))
+	}
+
+	logger := log.NewLogEntry()
+
+	if opts.JwtHS256 != "" {
+		logger.Info(fmt.Sprintf("Should add JWT shared key in proxy"))
+		optFuncs = append(optFuncs, setJWTHS25Signer(opts.JwtHS256, func() time.Time { return time.Now() }))
+	}
+
+	if opts.JwtRS256PrivateKey != "" {
+		logger.Info(fmt.Sprintf("Should add JWT public key in proxy"))
+		optFuncs = append(optFuncs, setJwtRS256Signer(opts.JwtRS256PrivateKey, func() time.Time { return time.Now() }))
 	}
 
 	hostRouter := hostmux.NewRouter()

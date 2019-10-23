@@ -206,14 +206,6 @@ func newSigningHandler(handler http.Handler, config *UpstreamConfig, signer *Req
 			signer.Sign(req)
 		}
 
-		if needsJWT() {
-			err := signWithJWT(req)
-			if err != nil {
-				logger := log.NewLogEntry()
-				logger.Error(err)
-			}
-		}
-
 		handler.ServeHTTP(rw, req)
 	})
 }

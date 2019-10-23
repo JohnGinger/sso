@@ -66,8 +66,10 @@ type OAuthProxy struct {
 
 	StatsdClient *statsd.Client
 
-	requestSigner   *RequestSigner
-	publicCertsJSON []byte
+	requestSigner            *RequestSigner
+	publicCertsJSON          []byte
+	jwtHS256Signer           func(*http.Request) error
+	jwtRS256PrivateKeySigner func(*http.Request) error
 
 	// these are required
 	provider       providers.Provider
@@ -808,6 +810,21 @@ func (p *OAuthProxy) Authenticate(rw http.ResponseWriter, req *http.Request) (er
 
 	// stash authenticated user so that it can be logged later (see func logRequest)
 	rw.Header().Set(loggingUserHeader, session.Email)
+
+	logger.WithRemoteAddress(remoteAddr).WithUser(session.Email).Info(fmt.Sprintf("Process auth"))
+
+	if p.jwtHS256Signer != nil {
+		err := p.jwtHS256Signer(req)
+		if err != nil {
+			logger.WithRemoteAddress(remoteAddr).WithUser(session.Email).Error(err)
+		}
+	}
+	if p.jwtRS256PrivateKeySigner != nil {
+		err := p.jwtRS256PrivateKeySigner(req)
+		if err != nil {
+			logger.WithRemoteAddress(remoteAddr).WithUser(session.Email).Error(err)
+		}
+	}
 
 	// This user has been OK'd. Allow the request!
 	return nil
