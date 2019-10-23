@@ -90,7 +90,7 @@ func setJwtRS256Signer(JwtRS256PrivateKey string, now func() time.Time) func(*OA
 	return func(op *OAuthProxy) error {
 
 		logger.Info("adding JWT RS256")
-		
+
 		op.jwtRS256PrivateKeySigner = func(req *http.Request) error {
 			return signWithJWTPrivateKey(req, JwtRS256PrivateKey, now())
 		}

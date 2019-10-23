@@ -130,8 +130,8 @@ func testNewOAuthProxy(t *testing.T, optFuncs ...func(*OAuthProxy) error) (*OAut
 		SetUpstreamConfig(upstreamConfig),
 		SetProxyHandler(reverseProxy),
 		SetRequestSigner(requestSigner),
-		setJWTHS25Signer("my-test-shared-secret", func() time.Time {return time.Unix(1571847717,0)}),
-		setJwtRS256Signer(string(requestSigningKey),func() time.Time {return time.Unix(1571847717,0)}),
+		setJWTHS25Signer("my-test-shared-secret", func() time.Time { return time.Unix(1571847717, 0) }),
+		setJwtRS256Signer(string(requestSigningKey), func() time.Time { return time.Unix(1571847717, 0) }),
 		setCSRFStore(&sessions.MockCSRFStore{}),
 		setCookieCipher(&aead.MockCipher{}),
 	}
@@ -390,7 +390,7 @@ func TestHeadersSentToUpstreams(t *testing.T) {
 			expectedJWTRS256, err := ioutil.ReadFile("testdata/rs256.txt")
 			if err != nil {
 				t.Fatalf("could not read rs256 key from testdata: %s", err)
-			}	
+			}
 			expectedHeaders := map[string]string{
 				"X-Forwarded-Email":  session.Email,
 				"X-Forwarded-User":   session.User,
